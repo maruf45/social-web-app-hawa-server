@@ -26,10 +26,26 @@ async function run() {
         const result = await usersData.insertOne(userData);
         res.send(result);
     });
-    // app.put('/usersData', async (req, res) =>{
-    //     const query = {}
-    // })
-    a
+    // update User Data
+    app.put('/usersData', async (req, res) =>{
+        const userUpdateData = req.body;
+        const userEmail = userUpdateData.email;
+        const filter = {email: userEmail}
+        const options = { upsert: true };
+        const updateDoc = {
+            $set: {
+                name: userUpdateData.name,
+                email: userUpdateData.email,
+                phone: userUpdateData.phone,
+                photoUrl: userUpdateData.photoUrl
+            },
+        }
+        const result = await usersData.updateOne(filter, updateDoc, options);
+        res.send(result);
+    })
+    // get Users data
+    app.get('/')
+    
   } catch {}
 }
 run().catch((error) => console.log(error.message));
