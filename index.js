@@ -22,30 +22,34 @@ async function run() {
     const usersData = socialData.collection("UsersData");
     // Collect user data
     app.post("/usersData", async (req, res) => {
-        const userData = req.body;
-        const result = await usersData.insertOne(userData);
-        res.send(result);
+      const userData = req.body;
+      const result = await usersData.insertOne(userData);
+      res.send(result);
     });
     // update User Data
-    app.put('/usersData', async (req, res) =>{
-        const userUpdateData = req.body;
-        const userEmail = userUpdateData.email;
-        const filter = {email: userEmail}
-        const options = { upsert: true };
-        const updateDoc = {
-            $set: {
-                name: userUpdateData.name,
-                email: userUpdateData.email,
-                phone: userUpdateData.phone,
-                photoUrl: userUpdateData.photoUrl
-            },
-        }
-        const result = await usersData.updateOne(filter, updateDoc, options);
-        res.send(result);
-    })
+    app.put("/usersData", async (req, res) => {
+      const userUpdateData = req.body;
+      const userEmail = userUpdateData.email;
+      const filter = { email: userEmail };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+          name: userUpdateData.name,
+          email: userUpdateData.email,
+          phone: userUpdateData.phone,
+          photoUrl: userUpdateData.photoUrl,
+        },
+      };
+      const result = await usersData.updateOne(filter, updateDoc, options);
+      res.send(result);
+    });
     // get Users data
-    app.get('/')
-    
+    app.get("/usersData", async (req, res) => {
+      const email = req.query.email;
+      const query = { email: email };
+      const result = await usersData.findOne(query);
+      res.send(result)
+    });
   } catch {}
 }
 run().catch((error) => console.log(error.message));
@@ -53,6 +57,5 @@ run().catch((error) => console.log(error.message));
 app.get("/", (req, res) => {
   res.send("Server running");
 });
-
 
 app.listen(port);
