@@ -20,6 +20,7 @@ async function run() {
   try {
     const socialData = client.db("SocialDatabase");
     const usersData = socialData.collection("UsersData");
+    const usersPost = socialData.collection('userPost');
     // Collect user data
     app.post("/usersData", async (req, res) => {
       const userData = req.body;
@@ -50,6 +51,17 @@ async function run() {
       const result = await usersData.findOne(query);
       res.send(result)
     });
+    // Upload User Post 
+    app.post('/usersPost', async (req, res) => {
+        const userPost = req.body;
+        const result = await usersPost.insertOne(userPost);
+        res.send(result);
+    })
+    app.get('/usersPost', async (req, res) => {
+        const query = {};
+        const result = await usersPost.find(query).toArray();
+        res.send(result.reverse());
+    })
   } catch {}
 }
 run().catch((error) => console.log(error.message));
